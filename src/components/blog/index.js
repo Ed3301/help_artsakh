@@ -19,7 +19,7 @@ export default {
             otherEventsOfUser: [],
             currentEvent: {},
             currentCategory: {},
-            picker: new Date().toISOString().substr(0, 10),
+            picker: '',
             drawer: false
         }
     },

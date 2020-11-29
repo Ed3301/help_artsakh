@@ -104,6 +104,21 @@ export default {
                     this.snackbarText = err.msg;
                     this.snackbar = true;
                 });
-        }
+        },
+        deleteEvent() {
+            Vue.$http.get(`/removeEvent?eventId=${this.event.id}`)
+                .then(() => {
+                    this.snackbarText = 'Event was successfully deleted!';
+                    this.snackbarColor = 'success';
+                    this.snackbar = true;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.snackbarText = 'Something went wrong!';
+                    this.snackbarColor = 'error';
+                    this.snackbar = true;
+                });
+            this.deleteDialog = false;
+        },
     }
 }

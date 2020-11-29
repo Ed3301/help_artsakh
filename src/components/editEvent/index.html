@@ -208,8 +208,8 @@
                 <h2 class="color-base">Delete this event?</h2>
                 <p>Are you sure? This action can't be undone</p>
                 <div class="d-flex w-100 justify-space-around">
-                    <v-btn outlined style="background: #333333" class="color-white text-lowercase">yes</v-btn>
-                    <v-btn outlined class="bg-base color-white text-lowercase">nope</v-btn>
+                    <v-btn @click="deleteEvent" outlined style="background: #333333" class="color-white text-lowercase">yes</v-btn>
+                    <v-btn @click="deleteDialog = false" outlined class="bg-base color-white text-lowercase">nope</v-btn>
                 </div>
             </div>
         </div>

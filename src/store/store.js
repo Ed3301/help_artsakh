@@ -12,6 +12,9 @@ export default new Vuex.Store({
         loginModal: false,
         registerModal: false,
         selectedEventPosition: {},
+        monthNames: ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ],
         categories: [
             {
                 id: 1,
@@ -47,86 +50,6 @@ export default new Vuex.Store({
                 iconBlack: require('../static/images/icons/Armenian-Non-Profits.png'),
                 iconWhite: require('../static/images/icons/Armenian-Non-Profits-white.png'),
                 currentIcon: require('../static/images/icons/Armenian-Non-Profits.png')
-            },
-        ],
-        monthNames: ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ],
-        events: [
-            {
-                address: 'Pushkin 6',
-                country: 'Armenia',
-                city: 'Yerevan',
-                image: require('../static/images/cafe1.jpg'),
-                title: 'Help Armenia',
-                description: 'Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia',
-                date: new Date().toISOString().substr(0, 10),
-                category: 'Donation',
-                phoneNumber: '+123456789',
-                location: {
-                    lat: 40.35406877046384,
-                    lng: 44.21045739453123
-                }
-            },
-            {
-                address: 'Pushkin 6',
-                country: 'Armenia',
-                city: 'Yerevan',
-                image: require('../static/images/cafe2.jpeg'),
-                title: 'Help Armenia',
-                description: 'Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia',
-                date: new Date().toISOString().substr(0, 10),
-                category: 'Donation',
-                phoneNumber: '+123456789',
-                location: {
-                    lat: 40.61310772703784,
-                    lng: 44.62244469921873
-                }
-            },
-            {
-                address: 'Pushkin 6',
-                country: 'Armenia',
-                city: 'Yerevan',
-                image: require('../static/images/cafe3.jpeg'),
-                title: 'Help Armenia',
-                description: 'Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia',
-                date: new Date().toISOString().substr(0, 10),
-                category: 'Donation',
-                phoneNumber: '+123456789',
-                location: {
-                    lat: 39.892026137188324,
-                    lng: 45.01795251171873
-                }
-            },
-            {
-                address: 'Pushkin 6',
-                country: 'Armenia',
-                city: 'Yerevan',
-                image: require('../static/images/cafe1.jpg'),
-                title: 'Help Armenia',
-                description: 'Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia',
-                date: new Date().toISOString().substr(0, 10),
-                category: 'Donation',
-                phoneNumber: '+123456789',
-                location: {
-                    lat: 40.299627415178676,
-                    lng: 44.96302087109373
-                }
-            },
-            {
-                address: 'Pushkin 6',
-                country: 'Armenia',
-                city: 'Yerevan',
-                image: require('../static/images/cafe2.jpeg'),
-                title: 'Help Armenia',
-                description: 'Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia Help Armenia',
-                date: new Date().toISOString().substr(0, 10),
-                category: 'Donation',
-                phoneNumber: '+123456789',
-                location: {
-                    lat: 40.30381677064747,
-                    lng: 43.85889489453123
-                }
             },
         ],
     },

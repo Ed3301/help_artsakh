@@ -57,7 +57,7 @@
             My events
         </h3>
     </div>
-    <div class="events">
+    <div class="events" v-if="events.length">
         <div class="row">
             <div v-for="(event, i) in events" :key="i" class="col-md-4">
                 <v-card

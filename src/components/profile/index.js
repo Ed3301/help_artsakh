@@ -131,6 +131,7 @@ export default {
                         this.snackbarText = 'Your event was successfully created!';
                         this.snackbarColor = 'success';
                         this.snackbar = true;
+                        this.events.push(this.newEvent);
                     }
                 })
                 .catch(err => {
@@ -218,6 +219,7 @@ export default {
                     this.snackbarColor = 'error';
                     this.snackbar = true;
                 });
+            this.deleteEventDialog = false;
         },
         deleteProfile() {
             Vue.$http.get('/removeProfile')
