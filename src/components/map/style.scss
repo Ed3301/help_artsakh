@@ -1,0 +1,52 @@
+$base-margin: 130px;
+$base-color: #ea1e48;
+
+#map {
+  max-width: 100%;
+  padding-bottom: 500px !important;
+
+  #tooltip {
+    padding: 40px;
+    border-radius: 10px;
+    z-index: 2;
+    max-width: 98%;
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  }
+
+  .square {
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+    transform: rotate(45deg);
+  }
+
+  .event-img {
+    .img {
+      border-radius: 10px;
+      background-image: url("../../static/images/cafe1.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
+  .event-data {
+    border-right: 2px solid $base-color;
+
+    p {
+      font-weight: bold;
+    }
+  }
+
+  .company-data {
+    .img {
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      background-image: url("../../static/images/logos/logo1.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+}

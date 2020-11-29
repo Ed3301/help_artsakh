@@ -1,0 +1,130 @@
+$base-margin: 130px;
+$base-color: #ea1e48;
+
+.main {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+
+  .header {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .calendar {
+    margin-top: -180px;
+
+    .search {
+      width: 300px;
+      color: #ea1e48;
+      border-radius: 30px;
+      margin-left: auto;
+
+      .icon {
+        color: $base-color;
+        padding: 5px;
+        border-left: 2px solid $base-color;
+      }
+    }
+    .datepicker {
+      box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    }
+    .map {
+      button {
+          color: white !important;
+      }
+      & > div {
+        justify-content: space-evenly;
+      }
+      .location-icon {
+        height: 120px;
+      }
+    }
+  }
+
+
+
+  .events {
+
+    .location-icon {
+      height: 30px;
+    }
+
+    .overlay {
+      .overlay-header {
+        height: 60px;
+        background-color: $base-color;
+      }
+
+      .event-data {
+        .data {
+          p {
+            font-weight: bold;
+          }
+        }
+      }
+
+      .event-img {
+        height: 300px;
+        width: 300px;
+        border-radius: 5px;
+      }
+    }
+
+    .event-card {
+      margin-right: 50px;
+
+      .card-image {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 300px;
+        width: 300px;
+        color: white;
+
+        .info-div {
+          opacity: 0;
+          height: 0 ;
+          background: rgba(0,0,0,0.3);
+          transition: height .5s, opacity .5s !important;
+
+          button {
+            color: $base-color;
+            border-color: white;
+            border-radius: 10px;
+            background-color: white;
+          }
+        }
+
+        &:hover {
+          .info-div {
+            height: 100%;
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+
+  .our-story {
+    .info-box {
+      max-width: 500px;
+      border: 1px solid $base-color;
+      border-radius: 10px;
+
+      h2 {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid $base-color;
+        line-height: 0.1em;
+        margin: 10px 0 20px;
+
+        span {
+          background:#fff;
+          padding:0 10px;
+        }
+      }
+    }
+  }
+}

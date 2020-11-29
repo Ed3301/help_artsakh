@@ -1,0 +1,88 @@
+$base-margin: 130px;
+$base-color: #ea1e48;
+
+#featured {
+  background-color: #f6f6f6;
+  max-width: 100% !important;
+  padding-left: $base-margin !important;
+  padding-right: $base-margin !important;
+
+  .search {
+    width: 400px;
+    color: #ea1e48;
+    border-radius: 30px;
+    margin-left: auto;
+
+    .icon {
+      color: $base-color;
+      padding: 5px;
+      border-left: 2px solid $base-color;
+    }
+  }
+
+  .events {
+
+    .location-icon {
+      height: 30px;
+    }
+
+    .v-sheet.v-card {
+      border-radius: 10px;
+    }
+
+    .overlay {
+      .overlay-header {
+        height: 60px;
+        background-color: $base-color;
+      }
+
+      .event-data {
+        .data {
+          p {
+            font-weight: bold;
+          }
+        }
+      }
+
+      .event-img {
+        height: 200px;
+        //width: 200px;
+        border-radius: 5px;
+      }
+    }
+
+    .event-card {
+      margin-right: 50px;
+
+      .card-image {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 200px;
+        color: white;
+        overflow: hidden;
+
+        .info-div {
+          opacity: 0;
+          height: 0 ;
+          background: rgba(0,0,0,0.3);
+          transition: height .5s, opacity .5s !important;
+
+          button {
+            color: $base-color;
+            border-color: white;
+            border-radius: 10px;
+            background-color: white;
+          }
+        }
+
+        &:hover {
+          .info-div {
+            height: 100%;
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}

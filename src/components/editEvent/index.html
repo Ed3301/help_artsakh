@@ -1,0 +1,224 @@
+<v-container fluid id="editEvent">
+    <div class="bg-white post-event p-4">
+        <div class="row">
+            <div :style="{'backgroundImage': 'url(' + setEventImg(event) + ')'}" class="col-12 img"></div>
+            <div class="col-md-6 mt-5">
+                <v-select
+                        v-model="event.categoryId"
+                        :items="categories"
+                        item-text="name"
+                        item-value="id"
+                        label="Category"
+                        dense
+                ></v-select>
+            </div>
+            <div class="col-md-6 mt-5">
+                <v-menu
+                        ref="menu"
+                        v-model="dateMenu"
+                        :close-on-content-click="false"
+                        :return-value.sync="event.date"
+                        transition="scale-transition"
+                        offset-y
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                                v-model="event.startDate + ' - ' + event.endDate"
+                                label="Date"
+                                prepend-icon="fa-calendar-alt"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <div class="d-flex bg-white justify-space-around">
+                        <p class="m-0 text-muted">Start date:</p>
+                        <p class="m-0 text-muted">End date:</p>
+                    </div>
+                    <v-date-picker
+                            v-model="event.startDate"
+                            :min="new Date().toISOString().substr(0, 10)"
+                            :max="event.endDate"
+                            no-title
+                            scrollable
+                    >
+                    </v-date-picker>
+                    <v-date-picker
+                            v-model="event.endDate"
+                            :min="event.startDate"
+                            no-title
+                            scrollable
+                    >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                                text
+                                color="primary"
+                                @click="dateMenu1 = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.menu.save(event.startDate + ' ' + event.endDate), dateMenu1 = false"
+                        >
+                            OK
+                        </v-btn>
+                    </v-date-picker>
+                </v-menu>
+            </div>
+            <div class="col-md-6">
+                <v-select
+                        v-model="event.country"
+                        :items="countries"
+                        item-value="english"
+                        item-text="english"
+                        label="Country"
+                        dense
+                ></v-select>
+            </div>
+            <div class="col-md-6">
+                <v-text-field
+                        v-model="event.city"
+                        label="City"
+                        dense
+                ></v-text-field>
+            </div>
+            <div class="col-md-6">
+                <v-text-field v-model="event.title" label="Title"></v-text-field>
+            </div>
+            <div class="col-md-6">
+                <v-menu
+                        ref="menu"
+                        v-model="timeMenu"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="event.time"
+                        transition="scale-transition"
+                        offset-y
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                                v-model="event.startTime + ' - ' + event.endTime"
+                                label="Working hours"
+                                prepend-icon="fa-clock"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <div class="d-flex bg-white justify-space-around">
+                        <p class="m-0 text-muted">Start time:</p>
+                        <p class="m-0 text-muted">End time:</p>
+                    </div>
+                    <v-time-picker
+                            header-color="#ea1e48"
+                            color="#ea1e48"
+                            v-model="event.startTime"
+                            :max="event.endTime"
+                    ></v-time-picker>
+                    <v-time-picker
+                            header-color="#ea1e48"
+                            color="#ea1e48"
+                            v-model="event.endTime"
+                            :min="event.startTime"
+                    ></v-time-picker>
+                </v-menu>
+            </div>
+            <div class="col-md-6">
+                <v-textarea
+                        v-model="event.description"
+                        label="Description"
+                        hint="Describe your event"
+                        outlined
+                ></v-textarea>
+            </div>
+            <div class="col-md-6">
+                <v-file-input
+                        @change="uploadEventImage"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Add a photo"
+                        prepend-icon="fa-camera"
+                        label="Photo"
+                ></v-file-input>
+            </div>
+            <div class="col-md-6">
+                <VuePhoneNumberInput v-model="event.phoneNumber" fetch-country />
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <v-btn @click="mapDialog = true" fab outlined small class="mr-3 text-muted">
+                    <v-icon color="#333333">
+                        fa-plus
+                    </v-icon>
+                </v-btn>
+                <h6 class="text-muted">Add location</h6>
+            </div>
+            <div class="col-md-6 color-base mt-5">
+                <div @click="deleteDialog = true" class="cursor-pointer" style="width: fit-content">
+                    <v-icon color="#ea1e48" class="mr-1">
+                        fa-trash-alt
+                    </v-icon>
+                    <span>Delete this event</span>
+                </div>
+            </div>
+            <div class="col-md-6 text-right mt-5">
+                <v-btn @click="updateEvent" class="bg-base color-white text-lowercase" rounded>
+                    Save changes
+                </v-btn>
+            </div>
+        </div>
+    </div>
+    <v-dialog v-model="mapDialog" width="800">
+        <div class="position-relative map-dialog bg-white w-100">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="mapDialog = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <GmapMap
+                    class="w-100"
+                    :center="userPosition"
+                    :zoom="8"
+                    map-type-id="roadmap"
+                    style="height: 400px"
+                    @click="mark"
+            >
+                <GmapMarker
+                        :position="marker.position"
+                        :clickable="true"
+                        :draggable="true"
+                        :icon="markerIcon"
+                        @click="marker = {}"
+                />
+            </GmapMap>
+            <v-btn @click="acceptLocation" class="bg-base color-white position-absolute text-lowercase" rounded>
+                accept
+            </v-btn>
+        </div>
+    </v-dialog>
+    <v-dialog v-model="deleteDialog" width="500">
+        <div class="delete-dialog bg-white">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="deleteDialog = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <div class="w-100 p-5 text-center">
+                <h5 class="text-muted">{{ event.title }}</h5>
+                <h2 class="color-base">Delete this event?</h2>
+                <p>Are you sure? This action can't be undone</p>
+                <div class="d-flex w-100 justify-space-around">
+                    <v-btn outlined style="background: #333333" class="color-white text-lowercase">yes</v-btn>
+                    <v-btn outlined class="bg-base color-white text-lowercase">nope</v-btn>
+                </div>
+            </div>
+        </div>
+    </v-dialog>
+    <v-snackbar
+            v-model="snackbar"
+            :timeout="3000"
+            :color="snackbarColor"
+    >
+        <span class="color-white">{{ snackbarText }}</span>
+    </v-snackbar>
+</v-container>

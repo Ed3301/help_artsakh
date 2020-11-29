@@ -1,0 +1,174 @@
+<nav id="header" class="navbar navbar-expand-lg navbar-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="row justify-content-between align-items-lg-center navbar-nav m-0">
+            <div class="col-4 pl-0">
+                <router-link to="/our-story" class="nav-link pl-0">OUR STORY<span class="sr-only">(current)</span></router-link>
+            </div>
+            <div class="col-4 text-lg-center">
+                <router-link to="/" class="nav-link">HELP ARTSAKH</router-link>
+            </div>
+            <div class="col-4 text-lg-right pr-0">
+                <router-link to="/featured" class="nav-link d-inline">FEATURED</router-link>
+                <v-btn class="ml-2" outlined v-if="!isLoggedIn" @click="store.state.loginModal = true">
+                    Login
+                </v-btn>
+                <router-link v-else to="/profile" class="nav-link d-inline pr-0">PROFILE</router-link>
+            </div>
+        </div>
+    </div>
+    <v-dialog v-model="store.state.loginModal" width="500">
+        <div class="login-modal bg-white p-5">
+            <h3 class="text-center text-muted">LOGIN AND SHARE YOUR SINGLE POST</h3>
+            <v-text-field
+                    v-model="email"
+                    :rules="[rules.required, rules.email]"
+                    class="email"
+                    label="Email"
+                    outlined
+            >
+                <v-icon type="email" left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                    fa-envelope
+                </v-icon>
+            </v-text-field>
+            <v-text-field
+                    v-model="password"
+                    :rules="[rules.required, rules.passwordCounter]"
+                    :type="showPass ? 'text' : 'password'"
+                    name="input-10-2"
+                    label="Password"
+                    hint="At least 6 characters"
+                    class="input-group--focused password"
+                    outlined
+            >
+                <template slot="prepend-inner">
+                    <img height="25" width="20" class="mr-2" src="../../static/images/icons/lock.png" alt="lock">
+                </template>
+                <template slot="append">
+                    <img @click="showPass = !showPass" class="cursor-pointer" height="17" v-if="showPass" src="../../static/images/icons/eye-open.png" alt="eye">
+                    <img @click="showPass = !showPass" class="cursor-pointer mt-2" height="12" v-else src="../../static/images/icons/eye-close.png" alt="eye">
+                </template>
+            </v-text-field>
+            <div class="d-flex align-items-center extra">
+                <div class="col-6 pl-0 pt-0">
+                    <v-checkbox
+                            class="m-0 p-0 checkbox"
+                            v-model="keepLoggedIn"
+                            label="Keep me logged in"
+                            color="#ea1e48"
+                            value="#ea1e48"
+                            hide-details
+                    ></v-checkbox>
+                </div>
+                <div class="col-6 pt-0 pr-0 text-right">
+                    <a href="/#">Forgot password?</a>
+                </div>
+            </div>
+            <v-btn @click="login" rounded color="#ea1e48" large class="w-100 color-white">
+                Login now
+            </v-btn>
+            <div class="info-box text-center">
+                <p class="color-base"><span>You don't have an account?</span></p>
+                <v-btn @click="store.state.registerModal = true, store.state.loginModal = false" rounded large class="w-50 color-base">
+                    Register
+                </v-btn>
+            </div>
+        </div>
+    </v-dialog>
+    <v-dialog v-model="store.state.registerModal" width="500">
+        <div class="register-modal bg-white p-5">
+            <h4 class="text-center text-muted mb-4">GET YOUR FREE ACCOUNT</h4>
+            <v-text-field
+                    v-model="newUser.userName"
+                    :rules="[rules.required]"
+                    class="username"
+                    label="Username or company name"
+                    outlined
+            >
+                <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                    fa-user
+                </v-icon>
+            </v-text-field>
+            <v-text-field
+                    v-model="newUser.email"
+                    :rules="[rules.email, rules.required]"
+                    type="email"
+                    class="email"
+                    label="Email"
+                    outlined
+            >
+                <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                    fa-envelope
+                </v-icon>
+            </v-text-field>
+            <v-text-field
+                    v-model="newUser.password"
+                    :rules="[rules.passwordCounter, rules.required]"
+                    :type="showPass ? 'text' : 'password'"
+                    name="input-10-2"
+                    label="Password"
+                    hint="At least 6 characters"
+                    class="input-group--focused password"
+                    outlined
+            >
+                <template slot="prepend-inner">
+                    <img height="25" width="20" class="mr-2" src="../../static/images/icons/lock.png" alt="lock">
+                </template>
+                <template slot="append">
+                    <img @click="showPass = !showPass" class="cursor-pointer" height="17" v-if="showPass" src="../../static/images/icons/eye-open.png" alt="eye">
+                    <img @click="showPass = !showPass" class="cursor-pointer mt-2" height="12" v-else src="../../static/images/icons/eye-close.png" alt="eye">
+                </template>
+            </v-text-field>
+
+            <v-select
+                    v-model="newUser.country"
+                    :rules="[rules.required]"
+                    :items="countries"
+                    item-text="english"
+                    item-value="english"
+                    label="Country"
+                    class="country"
+                    outlined
+            >
+                <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                    fa-map-marker-alt
+                </v-icon>
+            </v-select>
+
+            <v-text-field
+                    v-model="newUser.city"
+                    :rules="[rules.required]"
+                    label="City"
+                    class="city"
+                    outlined
+            >
+                <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                    fa-building
+                </v-icon>
+            </v-text-field>
+
+            <v-text-field v-model="newUser.address" :rules="[rules.required]" class="address" label="Address" outlined>
+                <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                    fa-address-card
+                </v-icon>
+            </v-text-field>
+
+            <v-radio-group row class="p-0 m-0" v-model="newUser.role" label="Register as">
+                <v-radio color="#ea1e48" :value="1" label="User"></v-radio>
+                <v-radio color="#ea1e48" :value="2" label="Company"></v-radio>
+            </v-radio-group>
+            <v-btn @click="register" rounded color="#ea1e48" large class="w-100 color-white">
+                Register
+            </v-btn>
+        </div>
+    </v-dialog>
+    <v-snackbar
+            v-model="snackbar"
+            :timeout="3000"
+            color="success"
+    >
+        <span class="color-white">You're successfully registered!</span>
+    </v-snackbar>
+</nav>

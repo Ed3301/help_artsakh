@@ -1,0 +1,64 @@
+<v-container fluid class="p-0 m-0" id="map">
+    <GmapMap
+            class="w-100"
+            :center="userPosition"
+            :zoom="9"
+            map-type-id="roadmap"
+            style=" height: 500px"
+    >
+        <GmapMarker
+                v-for="(event, i) in events"
+                :key="i"
+                :position="{lat: event.locationLt, lng: event.locationLg}"
+                :clickable="true"
+                :icon="markerIcon(event)"
+                @mouseover="e => showData(e, event)"
+                @mouseout="e => hideData(e, event)"
+        />
+    </GmapMap>
+    <div class="square bg-white position-absolute" style="display: none"></div>
+
+    <v-container  id="tooltip" class="bg-white position-absolute" style="display: none">
+        <div class="row">
+            <div class="col-md-4 pr-5 event-img">
+                <div class="img h-100 w-100"></div>
+            </div>
+            <div class="col-md-4 event-data">
+                <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
+                <p>Category: {{ currentEvent.id ? categories.find(el => el.id == currentEvent.categoryId).name : '' }}</p>
+                <p>Date: {{ new Date(currentEvent.startDate).getFullYear() + ' ' + monthNames[new Date(currentEvent.startDate).getMonth()] + ' ' + new Date(currentEvent.startDate).getDate() }}</p>
+                <p>
+                    Working hours: {{ currentEvent.startTime + ' - ' + currentEvent.endTime}}
+                </p>
+                <p>Address: {{ currentEvent.address ? currentEvent.address : '-' }}</p>
+                <p>
+                    Phone Number: {{ currentEvent.phoneNumber ? currentEvent.phoneNumber : '-'}}
+                </p>
+            </div>
+            <div class="col-md-4 d-flex company-data">
+                <div class="col-5">
+                    <div class="div-bg-img mr-2" :style="{width: '100%', height: '60%', backgroundImage: 'url(' + setUserImg(currentUser.img) + ')'}"></div>
+                </div>
+                <div class="col-7">
+                    <h4 class="font-weight-bold">{{ currentUser.userName }}</h4>
+                    <p class="text-muted small m-0 mb-1">
+                        {{ currentUser.country + ', ' + currentUser.city }}
+                    </p>
+                    <p class="text-muted small m-0 mb-1">
+                        Email: {{ currentUser.email }}
+                    </p>
+                    <p class="text-muted small m-0 mb-1">
+                        Phone: {{ currentUser.phoneNumber }}
+                    </p>
+                    <p class="text-muted mb-1">
+                        <span class="mr-3">{{ currentUser.eventsCount }} events</span>
+                        <span>{{ currentUser.likesCount }} likes</span>
+                    </p>
+<!--                    <p class="font-weight-bold">-->
+<!--                        {{ currentEvent.description }}-->
+<!--                    </p>-->
+                </div>
+            </div>
+        </div>
+    </v-container>
+</v-container>

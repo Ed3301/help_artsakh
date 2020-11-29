@@ -1,0 +1,263 @@
+<v-container fluid id="featured">
+    <div class="d-flex align-self-center">
+        <div class="col-md-6 d-flex align-self-center pl-0">
+            <div @click="filterDrawer = true" class="cursor-pointer">
+                <v-icon>
+                    fa-sliders-h
+                </v-icon>
+                Choose a filter
+            </div>
+        </div>
+        <div class="col-md-6">
+            <v-combobox
+                    :items="searchResults"
+                    item-text="title"
+                    item-value="id"
+                    @input="searchEvents"
+                    class="search ml-auto"
+                    label="Find an event or facility"
+                    solo
+            >
+                <v-icon slot="append" class="cursor-pointer icon">
+                    fa-search
+                </v-icon>
+            </v-combobox>
+        </div>
+    </div>
+    <h2 class="text-center">Most featured events</h2>
+    <div class="events">
+        <div class="row">
+            <div v-for="(event, i) in events" :key="i" class="col-md-4">
+                <v-card
+                        class="event-card mb-1"
+                        color="grey lighten-4"
+                        max-width="300"
+                        @click.stop="showEvent(event)"
+                >
+                    <div
+                            :style="{'backgroundImage': `url(${setEventImg(event)})`}"
+                            class="card-image"
+                    >
+                        <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                            <button class="class ma-2 font-weight-bold p-1" @click.stop="setEventPosition({lat: event.locationLt, lng: event.locationLg})">
+                                <img class="location-icon" src="../../static/images/icons/location.png">
+                                <p class="m-0">Check a map</p>
+                            </button>
+                            <p class="m-0 mt-3">{{ event.title }}</p>
+                            <hr class="w-100 border" />
+                            <p>Category: {{ categories.find(el => el.id === event.categoryId).name }}</p>
+                            <p>
+                                Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                            </p>
+                            <p>
+                                {{ event.country + ', ' + event.city}}
+                            </p>
+                        </div>
+                    </div>
+                </v-card>
+            </div>
+        </div>
+        <v-pagination
+                v-model="offset"
+                :length="eventsTotalCount"
+                @input="(val) => getEvents()"
+                class="my-4"
+                color="#ea1e48"
+                dark
+        ></v-pagination>
+        <v-navigation-drawer
+                v-model="eventDrawer"
+                fixed
+                temporary
+                right
+                width="75%"
+                class="overlay"
+        >
+            <div class="w-100 d-flex align-items-center overlay-header">
+                <div class="ml-5">
+                    <i @click="eventDrawer = false" class="fa fa-angle-left fa-3x color-white cursor-pointer"></i>
+                </div>
+            </div>
+            <div class="event-data w-100 p-4">
+                <div class="row justify-content-start w-100 p-4">
+                    <div class="col-5">
+                        <img class="event-img" src="../../static/images/cafe1.jpg" alt="img">
+                        <div class="d-flex mt-2">
+                            <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
+                            <div>
+                                <h5 class="mt-2">{{ currentEvent.userName }}</h5>
+                                <span class="text-muted">email: {{ currentEvent.email }}</span>
+                                <br>
+                                <span class="text-muted">Phone: {{ currentEvent.userPhoneNumber ? currentEvent.userPhoneNumber : '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 ml-0 data">
+                        <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
+                        <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
+                            <img class="location-icon" src="../../static/images/icons/location.png">
+                            <span class="ml-2 color-base">Check a map</span>
+                        </button>
+                        <p>Category: {{ currentEvent.categoryId ? categories.find(el => el.id === currentEvent.categoryId).name : '' }}</p>
+
+                        <p>Address: {{ currentEvent.address ? currentEvent.address : '-' }} </p>
+                        <p>
+                            Working hours: {{ currentEvent.startTime + ' - ' + currentEvent.endTime }}
+                        </p>
+                        <p>
+                            Phone Number: {{ currentEvent.phoneNumber }}
+                        </p>
+                        <p>Date: {{ new Date(currentEvent.startDate).getFullYear() + ' ' + monthNames[new Date(currentEvent.startDate).getMonth()] + ' ' + new Date(currentEvent.startDate).getDate() }}</p>
+                        <p>
+                            {{ currentEvent.description }}
+                        </p>
+                    </div>
+                </div>
+                <div class="slide" v-if="otherEventsOfUser.length">
+                    <h1 class="color-base ml-5">Other events of this company</h1>
+                    <v-sheet class="mx-auto">
+                        <v-slide-group
+                                class="pa-4"
+                                active-class="success"
+                                show-arrows
+                        >
+                            <v-slide-item
+                                    v-for="(event, i) in otherEventsOfUser"
+                                    :key="i"
+                            >
+                                <v-card
+                                        class="event-card mb-1"
+                                        color="grey lighten-4"
+                                        max-width="300"
+                                >
+                                    <div
+                                            :style="{'backgroundImage': 'url(' + setEventImg(event) + ')'}"
+                                            class="card-image"
+                                            @click="currentEvent = event"
+                                    >
+                                        <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                                            <p class="m-0 mt-3">{{ event.title }}</p>
+                                            <hr class="w-100 border" />
+                                            <p>
+                                                {{ event.country + ', ' + event.city}}
+                                            </p>
+                                            <p>Category: {{ event.categoryId ? categories.find(el => el.id === event.categoryId).name : '' }}</p>
+                                            <p>
+                                                Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </v-card>
+                            </v-slide-item>
+                        </v-slide-group>
+                    </v-sheet>
+                </div>
+            </div>
+        </v-navigation-drawer>
+    </div>
+    <h2 v-if="companies.length" class="text-center m-5">Most popular companies</h2>
+    <v-sheet v-if="companies.length" class="mx-auto events">
+        <v-slide-group
+                class="pa-4"
+                active-class="success"
+                show-arrows
+        >
+            <v-slide-item
+                    v-for="(company, i) in companies"
+                    :key="i"
+                    v-slot="{ active, toggle }"
+            >
+                <v-card
+                        class="event-card mb-1"
+                        color="grey lighten-4"
+                        max-width="300"
+                >
+                    <div
+                            :style="{'backgroundImage': `url(${setUserImg(company.img)})`}"
+                            class="card-image"
+                    >
+                        <div class="info-div w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                            <p class="m-0 mt-3">{{ company.userName }}</p>
+                            <hr class="w-100 border" />
+                            <p>Events: {{ company.eventsCount }}</p>
+                            <p>Likes: {{ company.likesCount }}</p>
+                            <p>
+                                {{ company.country + ', ' + company.city}}
+                            </p>
+                        </div>
+                    </div>
+                </v-card>
+            </v-slide-item>
+        </v-slide-group>
+    </v-sheet>
+    <v-navigation-drawer
+            v-model="filterDrawer"
+            fixed
+            temporary
+            width="25%"
+            class="overlay"
+    >
+        <div class="w-100 bg-base d-flex overflow-hidden">
+            <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="filterDrawer = false">
+                fa-times
+            </v-icon>
+        </div>
+        <div class="w-100 text-center p-5">
+            <p class="text-muted font-weight-bold" style="font-size: 20px">Filters</p>
+            <v-select
+                    v-model="filters.categoryId"
+                    :items="categories"
+                    item-value="id"
+                    item-text="name"
+                    label="Category"
+            ></v-select>
+            <v-select
+                    v-model="filters.country"
+                    :items="countries"
+                    item-value="english"
+                    item-text="english"
+                    label="Country"
+                    dense
+            >
+                <option value="all">all</option>
+            </v-select>
+            <v-text-field
+                    v-model="filters.city"
+                    label="City"
+                    dense
+            ></v-text-field>
+            <v-menu
+                    ref="menu"
+                    v-model="dateMenu"
+                    transition="scale-transition"
+                    offset-y
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                            v-model="filters.date"
+                            label="Date"
+                            prepend-icon="fa-calendar-alt"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                        v-model="filters.date"
+                        color="#ea1e48"
+                        no-title
+                        scrollable
+                >
+                </v-date-picker>
+            </v-menu>
+            <div class="d-flex justify-space-between">
+                <v-btn large @click="(e) => getEvents()" class="bg-base mt-5 color-white" rounded>
+                    Find
+                </v-btn>
+                <v-btn large @click="filters = {}" dark class="mt-5 color-white" rounded>
+                    reset
+                </v-btn>
+            </div>
+        </div>
+    </v-navigation-drawer>
+</v-container>

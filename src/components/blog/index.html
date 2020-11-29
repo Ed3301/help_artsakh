@@ -1,0 +1,205 @@
+<v-container fluid class="main">
+    <v-container fluid class="header">
+        <v-carousel cycle hide-delimiters :show-arrows="false">
+            <v-carousel-item
+                    v-for="(item,i) in headerPictures"
+                    :key="i"
+                    :src="item.src"
+            ></v-carousel-item>
+        </v-carousel>
+    </v-container>
+    <v-container fluid class="calendar">
+        <div class="row justify-content-between">
+            <div class="col-6">
+                <v-date-picker
+                        v-model="picker"
+                        color="#ea1e48"
+                        class="datepicker"
+                ></v-date-picker>
+            </div>
+            <div class="col-6 map">
+                <v-card class="row flex-column align-items-center ml-auto mr-0" max-width="290" height="260">
+                    <img class="location-icon" src="../../static/images/icons/location.png">
+                    <hr class="w-75 border m-0" />
+                    <h4 class="font-weight-bold">Map orientic</h4>
+                    <v-btn @click.stop="$router.push('/map')" rounded color="#ea1e48">
+                        Check it now
+                    </v-btn>
+                </v-card>
+            </div>
+        </div>
+    </v-container>
+    <v-container fluid class="categories">
+        <h2 class="text-center mb-3">
+            Pick a category
+        </h2>
+        <div class="row justify-content-center">
+            <div class="col-2 row justify-content-center align-items-center m-1" v-for="(category, i) in categories" :key="i">
+                <div
+                        class="card-box text-center cursor-pointer" :id="'category' + category.name.replace(' ', '')"
+                        @click="selectCategory(category)"
+                >
+                    <img
+                            :src="category.currentIcon"
+                            alt="img"
+                            height="90"
+                            class="m-1">
+                    <p>{{ category.name }}</p>
+                </div>
+            </div>
+        </div>
+    </v-container>
+    <v-container fluid class="events">
+        <v-sheet class="mx-auto">
+            <v-slide-group
+                    class="pa-4"
+                    active-class="success"
+                    show-arrows
+            >
+                <v-slide-item
+                        v-for="(event, i) in events"
+                        :key="i"
+                >
+                    <v-card
+                            class="event-card mb-1"
+                            color="grey lighten-4"
+                            max-width="300"
+                            @click.stop="showEvent(event)"
+                    >
+                        <div
+                                :style="{'backgroundImage': 'url(' + setEventImg(event) + ')'}"
+                                class="card-image"
+                        >
+                            <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                                <button class="class ma-2 font-weight-bold p-1" @click.stop="setEventPosition({lat: event.locationLt, lng: event.locationLg})">
+                                    <img class="location-icon" src="../../static/images/icons/location.png">
+                                    <p class="m-0">Check a map</p>
+                                </button>
+                                <p class="m-0 mt-3">{{ event.title }}</p>
+                                <hr class="w-100 border" />
+                                <p>Category: {{ categories.find(el => el.id === event.categoryId).name }}</p>
+                                <p>
+                                    Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                                </p>
+                                <p>
+                                    {{ event.country + ', ' + event.city}}
+                                </p>
+                            </div>
+                        </div>
+                    </v-card>
+                </v-slide-item>
+            </v-slide-group>
+        </v-sheet>
+        <v-navigation-drawer
+                v-model="drawer"
+                fixed
+                temporary
+                right
+                width="75%"
+                class="overlay"
+        >
+            <div class="w-100 d-flex align-items-center overlay-header">
+                <div class="ml-5">
+                    <i @click="drawer = false" class="fa fa-angle-left fa-3x color-white cursor-pointer"></i>
+                </div>
+            </div>
+            <div class="event-data w-100 p-4">
+                <div class="row justify-content-start w-100 p-4">
+                    <div class="col-5">
+                        <img class="event-img" :src="setEventImg(currentEvent)" alt="img">
+                        <div class="d-flex mt-5">
+                            <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
+                            <div>
+                                <h5 class="mt-2">{{ currentEvent.userName }}</h5>
+                                <span class="text-muted">Email: {{ currentEvent.email }}</span>
+                                <br>
+                                <span class="text-muted">Phone: {{ currentEvent.userPhoneNumber ? currentEvent.userPhoneNumber : '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 ml-0 data">
+                        <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
+                        <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
+                            <img class="location-icon" src="../../static/images/icons/location.png">
+                            <span class="ml-2 color-base">Check a map</span>
+                        </button>
+                        <p>Category: {{ currentEvent.categoryId ? categories.find(el => el.id === currentEvent.categoryId).name : '' }}</p>
+
+                        <p>Address: {{ currentEvent.address ? currentEvent.address : '-' }} </p>
+                        <p>
+                            Working hours: {{ currentEvent.startTime + ' - ' + currentEvent.endTime }}
+                        </p>
+                        <p>
+                            Phone Number: {{ currentEvent.phoneNumber ? currentEvent.phoneNumber : '-' }}
+                        </p>
+                        <p>Date: {{ new Date(currentEvent.startDate).getFullYear() + ' ' + monthNames[new Date(currentEvent.startDate).getMonth()] + ' ' + new Date(currentEvent.startDate).getDate() }}</p>
+                        <p>
+                            {{ currentEvent.description }}
+                        </p>
+                    </div>
+                </div>
+                <div class="slide" v-if="otherEventsOfUser.length">
+                    <h1 class="color-base ml-5">Other events of this company</h1>
+                    <v-sheet class="mx-auto">
+                        <v-slide-group
+                                class="pa-4"
+                                active-class="success"
+                                show-arrows
+                        >
+                            <v-slide-item
+                                    v-for="(event, i) in otherEventsOfUser"
+                                    :key="i"
+                            >
+                                <v-card
+                                        class="event-card mb-1"
+                                        color="grey lighten-4"
+                                        max-width="300"
+                                >
+                                    <div
+                                            :style="{'backgroundImage': 'url(' + setEventImg(event) + ')', 'height': '200px'}"
+                                            class="card-image"
+                                            @click="currentEvent = event"
+                                    >
+                                        <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                                            <p class="m-0 mt-3">{{ event.title }}</p>
+                                            <hr class="w-100 border" />
+                                            <p>
+                                                {{ event.country + ', ' + event.city}}
+                                            </p>
+                                            <p>Category: {{ event.categoryId ? categories.find(el => el.id === event.categoryId).name : '' }}</p>
+                                            <p>
+                                                Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </v-card>
+                            </v-slide-item>
+                        </v-slide-group>
+                    </v-sheet>
+                </div>
+            </div>
+        </v-navigation-drawer>
+    </v-container>
+    <v-container fluid class="our-story mt-5 mb-5">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-7 info-box p-5">
+                <h2 class="color-base"><span>OUR STORY</span></h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. At debitis, eaque enim exercitationem iusto perspiciatis tempora? A accusantium architecto cumque ea exercitationem ipsum iusto libero nisi odio optio quos tempore unde, veniam veritatis voluptate. Accusamus molestiae nulla quasi sed sunt! Beatae cupiditate dicta distinctio esse eveniet ex magnam omnis, perferendis.
+                </p>
+            </div>
+            <div class="col-5 text-center">
+                <h1 class="color-base font-weight-bold p-4">Want to make a single post?</h1>
+                <v-btn @click="store.state.loginModal = true" x-large color="#ea1e48" class="font-weight-bold color-white">Login to add a post</v-btn>
+            </div>
+        </div>
+    </v-container>
+    <v-container fluid class="our-partners mt-5 mb-5">
+        <h1 class="text-center">Our Partners</h1>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-2" v-for="i in 11" :key="i">
+                <img height="50" :src="require(`../../static/images/logos/logo${i}.jpg`)" alt="img">
+            </div>
+        </div>
+    </v-container>
+</v-container>

@@ -1,0 +1,162 @@
+<v-container class="calendar-page row p-0 m-0" fluid>
+    <div class="col-4 calendar text-center">
+        <h5 class="font-weight-bold m-3">Event Calendar</h5>
+        <v-date-picker
+                v-model="picker"
+                color="#ea1e48"
+                class="datepicker"
+        ></v-date-picker>
+        <div class="category-checkbox row">
+            <v-checkbox
+                    v-for="(category, i) in categories"
+                    v-model="categoryIds[category.id]"
+                    :key="i"
+                    :label="category.name"
+                    color="#ea1e48"
+                    class="col-6"
+                    @click="getEvents()"
+            >
+            </v-checkbox>
+        </div>
+    </div>
+    <div class="col-8 main">
+        <v-combobox
+                :items="searchResults"
+                item-text="title"
+                item-value="id"
+                @input="searchEvents"
+                class="search ml-auto"
+                label="Find an event or facility"
+                solo
+        >
+            <v-icon slot="append" class="cursor-pointer icon">
+                fa-search
+            </v-icon>
+        </v-combobox>
+        <h3 class="text-center text-muted">{{ new Date(picker).getFullYear() + ' ' + monthNames[new Date(picker).getMonth()] + ' ' + new Date(picker).getDate() }}</h3>
+        <v-container fluid class="events">
+            <div class="row justify-content-center">
+                <div v-for="(event, i) in events" :key="i" class="col-md-4">
+                    <v-card
+                            class="event-card mb-1"
+                            color="grey lighten-4"
+                            max-width="300"
+                            @click.stop="showEvent(event)"
+                    >
+                        <div
+                                :style="{'backgroundImage': 'url(' + setEventImg(event) + ')'}"
+                                class="card-image"
+                        >
+                            <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                                <button class="class ma-2 font-weight-bold p-1" @click.stop="setEventPosition({lat: event.locationLt, lng: event.locationLg})">
+                                    <img class="location-icon" src="../../static/images/icons/location.png">
+                                    <p class="m-0">Check a map</p>
+                                </button>
+                                <p class="m-0 mt-3">{{ event.title }}</p>
+                                <hr class="w-100 border" />
+                                <p>{{ event.country + ', ' + event.city}}</p>
+                            </div>
+                        </div>
+                    </v-card>
+                </div>
+            </div>
+            <v-pagination
+                    v-model="offset"
+                    :length="eventsTotalCount"
+                    @input="(val) => getEvents()"
+                    class="my-4"
+                    color="#ea1e48"
+                    dark
+            ></v-pagination>
+            <v-navigation-drawer
+                    v-model="drawer"
+                    fixed
+                    temporary
+                    right
+                    width="75%"
+                    class="overlay"
+            >
+                <div class="w-100 d-flex overlay-header">
+                    <div class="ml-5">
+                        <i @click="drawer = false" class="fa fa-angle-left fa-3x color-white cursor-pointer"></i>
+                    </div>
+                </div>
+                <div class="event-data w-100 p-4">
+                    <div class="row justify-content-start w-100 p-4">
+                        <div class="col-5">
+                            <img class="event-img" :src="setEventImg(currentEvent)" alt="img">
+                            <div class="d-flex mt-5">
+                                <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
+                                <div>
+                                    <h5 class="mt-2">{{ currentEvent.userName }}</h5>
+                                    <span class="text-muted">Email: {{ currentEvent.email }}</span>
+                                    <br>
+                                    <span class="text-muted">Phone: {{ currentEvent.userPhoneNumber ? currentEvent.userPhoneNumber : '-' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 ml-0 data">
+                            <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
+                            <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
+                                <img class="location-icon" src="../../static/images/icons/location.png">
+                                <span class="ml-2 color-base">Check a map</span>
+                            </button>
+                            <p>Category: {{ currentEvent.categoryId ? categories.find(el => el.id === currentEvent.categoryId).name : '' }}</p>
+
+                            <p>Address: {{ currentEvent.address ? currentEvent.address : '-' }} </p>
+                            <p>
+                                Working hours: {{ currentEvent.startTime + ' - ' + currentEvent.endTime }}
+                            </p>
+                            <p>
+                                Phone Number: {{ currentEvent.phoneNumber }}
+                            </p>
+                            <p>Date: {{ new Date(currentEvent.startDate).getFullYear() + ' ' + monthNames[new Date(currentEvent.startDate).getMonth()] + ' ' + new Date(currentEvent.startDate).getDate() }}</p>
+                            <p>
+                                {{ currentEvent.description }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="slide" v-if="otherEventsOfUser.length">
+                        <h1 class="color-base ml-5">Other events of this company</h1>
+                        <v-sheet class="mx-auto">
+                            <v-slide-group
+                                    class="pa-4"
+                                    active-class="success"
+                                    show-arrows
+                            >
+                                <v-slide-item
+                                        v-for="(event, i) in otherEventsOfUser"
+                                        :key="i"
+                                >
+                                    <v-card
+                                            class="event-card mb-1"
+                                            color="grey lighten-4"
+                                            max-width="300"
+                                    >
+                                        <div
+                                                :style="{'backgroundImage': 'url(' + setEventImg(event) + ')'}"
+                                                class="card-image"
+                                                @click="currentEvent = event"
+                                        >
+                                            <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                                                <p class="m-0 mt-3">{{ event.title }}</p>
+                                                <hr class="w-100 border" />
+                                                <p>
+                                                    {{ event.country + ', ' + event.city}}
+                                                </p>
+                                                <p>Category: {{ event.categoryId ? categories.find(el => el.id === event.categoryId).name : '' }}</p>
+                                                <p>
+                                                    Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </v-card>
+                                </v-slide-item>
+                            </v-slide-group>
+                        </v-sheet>
+                    </div>
+                </div>
+            </v-navigation-drawer>
+        </v-container>
+    </div>
+</v-container>

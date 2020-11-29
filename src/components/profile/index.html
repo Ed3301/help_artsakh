@@ -1,0 +1,639 @@
+<v-container class="profile" fluid>
+    <div class="w-100">
+        <v-combobox
+                :items="searchResults"
+                item-text="title"
+                item-value="id"
+                @input="searchEvents"
+                class="search ml-auto"
+                label="Find an event or facility"
+                solo
+        >
+            <v-icon slot="append" class="cursor-pointer icon">
+                fa-search
+            </v-icon>
+        </v-combobox>
+    </div>
+    <div class="bg-white company-info">
+        <div class="row">
+            <div class="col-6 d-flex align-items-center">
+                <div class="col-5 d-flex align-items-center justify-content-center">
+                    <div class="img" :style="{'backgroundImage': 'url(' + setUserImg(user.img) + ')' }"></div>
+                </div>
+                <div class="col-7 position-relative">
+                    <v-icon @click="infoDialog = true" color="#333333" class="cursor-pointer position-absolute" style="right: 0">
+                        fa-pen
+                    </v-icon>
+                    <h2>{{ user.userName }}</h2>
+                    <p class="text-muted small">
+                        {{ user.country + ', ' + user.city }}
+                    </p>
+                    <p class="text-muted small">
+                        Email: {{ user.email }}
+                    </p>
+                    <p class="text-muted small">
+                        Phone: {{ user.phoneNumber ? user.phoneNumber : '-' }}
+                    </p>
+                    <p class="text-muted">
+                        <span class="mr-3">{{ user.eventsCount }} events</span>
+                        <span>{{ user.likesCount}} likes</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-6 text-right d-flex flex-column">
+                <span class="p-2 pr-5"><v-btn @click="logout" color="#ea1e48" class="color-white" width="100" small>Log out</v-btn></span>
+                <span class="p-2 pr-5 mt-auto"><v-btn class="text-lowercase" @click="deleteProfileDialog = true" dark width="150" small>Delete your account</v-btn></span>
+            </div>
+        </div>
+    </div>
+    <div class="w-100 categories mt-5 pt-5 pb-5 pr-5 d-flex justify-space-between align-items-center">
+        <div @click="filterDrawer = true" class="cursor-pointer">
+            <v-icon>
+                fa-sliders-h
+            </v-icon>
+            Choose a filter
+        </div>
+        <h3 style="margin-right: 30px" class="color-base font-weight-bold">
+            My events
+        </h3>
+    </div>
+    <div class="events">
+        <div class="row">
+            <div v-for="(event, i) in events" :key="i" class="col-md-4">
+                <v-card
+                        class="event-card mb-1"
+                        color="grey lighten-4"
+                        max-width="300"
+                        @click.stop="showEvent(event)"
+                >
+                    <div
+                            :style="{'backgroundImage': 'url(' + setEventImg(event) + ')'}"
+                            class="card-image"
+                    >
+                        <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                            <div class="w-100 d-flex justify-space-between align-items-center">
+                                <v-icon @click.stop="deleteEventDialog = true, currentEvent = event" class="cursor-pointer" color="white">
+                                    fa-trash-alt
+                                </v-icon>
+                                <v-icon @click.stop="$router.push(`event/${event.id}/edit`)" class="cursor-pointer" color="white">
+                                    fa-pen
+                                </v-icon>
+                            </div>
+                            <button class="class ma-2 font-weight-bold p-1 loc" @click.stop="setEventPosition({lat: event.locationLt, lng: event.locationLg})">
+                                <img class="location-icon" src="../../static/images/icons/location.png">
+                                <p class="m-0">Check a map</p>
+                            </button>
+                            <p class="m-0 mt-3">{{ event.title }}</p>
+                            <hr class="w-100 border" />
+                            <p>{{ event.country + ', ' + event.city}}</p>
+                            <p>Category: {{ categories.find(el => el.id === event.categoryId).name }}</p>
+                            <p>
+                                Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                            </p>
+                        </div>
+                    </div>
+                </v-card>
+            </div>
+        </div>
+        <v-pagination
+                v-model="offset"
+                :length="eventsTotalCount"
+                @input="(val) => getEvents()"
+                class="my-4"
+                color="#ea1e48"
+                dark
+        ></v-pagination>
+        <v-navigation-drawer
+                v-model="drawer"
+                fixed
+                temporary
+                right
+                width="75%"
+                class="overlay"
+        >
+            <div class="w-100 d-flex align-items-center overlay-header">
+                <div class="ml-5">
+                    <i @click="drawer = false" class="fa fa-angle-left fa-3x color-white cursor-pointer"></i>
+                </div>
+            </div>
+            <div class="event-data w-100 p-4">
+                <div class="row justify-content-start w-100 p-4">
+                    <div class="col-5">
+                        <img class="event-img" :src="setEventImg(currentEvent)" alt="img">
+                        <div class="d-flex mt-5">
+                            <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
+                            <div>
+                                <h5 class="mt-2">{{ currentEvent.userName }}</h5>
+                                <span class="text-muted">Email: {{ currentEvent.email }}</span>
+                                <br>
+                                <span class="text-muted">Phone: {{ currentEvent.userPhoneNumber ? currentEvent.userPhoneNumber : '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 ml-0 data">
+                        <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
+                        <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
+                            <img class="location-icon" src="../../static/images/icons/location.png">
+                            <span class="ml-2 color-base">Check a map</span>
+                        </button>
+                        <p>Category: {{ currentEvent.categoryId ? categories.find(el => el.id === currentEvent.categoryId).name : '' }}</p>
+
+                        <p>Address: {{ currentEvent.address ? currentEvent.address : '-' }} </p>
+                        <p>
+                            Working hours: {{ currentEvent.startTime + ' - ' + currentEvent.endTime }}
+                        </p>
+                        <p>
+                            Phone Number: {{ currentEvent.phoneNumber }}
+                        </p>
+                        <p>Date: {{ new Date(currentEvent.startDate).getFullYear() + ' ' + monthNames[new Date(currentEvent.startDate).getMonth()] + ' ' + new Date(currentEvent.startDate).getDate() }}</p>
+                        <p>
+                            {{ currentEvent.description }}
+                        </p>
+                    </div>
+                </div>
+                <div class="slide" v-if="otherEventsOfUser.length">
+                    <h1 class="color-base ml-5">Other events of this company</h1>
+                    <v-sheet class="mx-auto">
+                        <v-slide-group
+                                class="pa-4"
+                                active-class="success"
+                                show-arrows
+                        >
+                            <v-slide-item
+                                    v-for="(event, i) in otherEventsOfUser"
+                                    :key="i"
+                            >
+                                <v-card
+                                        class="event-card mb-1"
+                                        color="grey lighten-4"
+                                        max-width="300"
+                                >
+                                    <div
+                                            :style="{'backgroundImage': 'url(' + setEventImg(event) + ')', height: '200px'}"
+                                            class="card-image"
+                                            @click="currentEvent = event"
+                                    >
+                                        <div class="info-div cursor-pointer w-100 d-flex text-center flex-column align-items-center font-weight-bold p-3">
+                                            <p class="m-0 mt-3">{{ event.title }}</p>
+                                            <hr class="w-100 border" />
+                                            <p>
+                                                {{ event.country + ', ' + event.city}}
+                                            </p>
+                                            <p>Category: {{ event.categoryId ? categories.find(el => el.id === event.categoryId).name : '' }}</p>
+                                            <p>
+                                                Working hours: {{ event.startTime + ' - ' + event.endTime }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </v-card>
+                            </v-slide-item>
+                        </v-slide-group>
+                    </v-sheet>
+                </div>
+            </div>
+        </v-navigation-drawer>
+        <v-navigation-drawer
+                v-model="filterDrawer"
+                fixed
+                temporary
+                width="25%"
+                class="overlay"
+        >
+            <div class="w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="filterDrawer = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <div class="w-100 text-center p-5">
+                <p class="text-muted font-weight-bold" style="font-size: 20px">Filters</p>
+                <v-select
+                        v-model="filters.categoryId"
+                        :items="categories"
+                        item-value="id"
+                        item-text="name"
+                        label="Category"
+                ></v-select>
+                <v-select
+                        v-model="filters.country"
+                        :items="countries"
+                        item-value="english"
+                        item-text="english"
+                        label="Country"
+                        dense
+                >
+                    <option value="all">all</option>
+                </v-select>
+                <v-text-field
+                        v-model="filters.city"
+                        label="City"
+                        dense
+                ></v-text-field>
+                <v-menu
+                        ref="menu"
+                        v-model="dateMenu"
+                        transition="scale-transition"
+                        offset-y
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                                v-model="filters.date"
+                                label="Date"
+                                prepend-icon="fa-calendar-alt"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                            v-model="filters.date"
+                            color="#ea1e48"
+                            no-title
+                            scrollable
+                    >
+                    </v-date-picker>
+                </v-menu>
+                <div class="d-flex justify-space-between">
+                    <v-btn large @click="getEvents" class="bg-base mt-5 color-white" rounded>
+                        Find
+                    </v-btn>
+                    <v-btn large @click="filters = {}" dark class="mt-5 color-white" rounded>
+                        reset
+                    </v-btn>
+                </div>
+            </div>
+        </v-navigation-drawer>
+    </div>
+    <h3 class="mt-5 mb-5 pt-4 pb-4 text-center text-muted font-weight-bold">Make an event post</h3>
+    <div class="bg-white post-event p-4">
+        <div class="row">
+            <div class="col-md-6">
+                <v-select
+                        v-model="newEvent.categoryId"
+                        :rules="[rules.required()]"
+                        :items="categories"
+                        item-text="name"
+                        item-value="id"
+                        label="Category"
+                        dense
+                ></v-select>
+            </div>
+            <div class="col-md-6">
+                <v-menu
+                        ref="menu"
+                        v-model="dateMenu1"
+                        :close-on-content-click="false"
+                        :return-value.sync="newEvent.date"
+                        transition="scale-transition"
+                        offset-y
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                                v-model="newEvent.startDate + ' - ' + newEvent.endDate"
+                                label="Date"
+                                prepend-icon="fa-calendar-alt"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <div class="d-flex bg-white justify-space-around">
+                        <p class="m-0 text-muted">Start date:</p>
+                        <p class="m-0 text-muted">End date:</p>
+                    </div>
+                    <v-date-picker
+                            v-model="newEvent.startDate"
+                            :min="new Date().toISOString().substr(0, 10)"
+                            :max="newEvent.endDate"
+                            no-title
+                            scrollable
+                    >
+                    </v-date-picker>
+                    <v-date-picker
+                            v-model="newEvent.endDate"
+                            :min="newEvent.startDate"
+                            no-title
+                            scrollable
+                    >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                                text
+                                color="primary"
+                                @click="dateMenu1 = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.menu.save(newEvent.startDate + ' ' + newEvent.endDate), dateMenu1 = false"
+                        >
+                            OK
+                        </v-btn>
+                    </v-date-picker>
+                </v-menu>
+            </div>
+            <div class="col-md-6">
+                <v-select
+                        v-model="newEvent.country"
+                        :rules="[rules.required()]"
+                        :items="countries"
+                        item-text="english"
+                        item-value="english"
+                        label="Country"
+                        dense
+                ></v-select>
+            </div>
+            <div class="col-md-6">
+<!--                <v-select-->
+<!--                        :items="['c1', 'c2', 'c3']"-->
+<!--                        label="City"-->
+<!--                        dense-->
+<!--                ></v-select>-->
+                <v-text-field
+                        v-model="newEvent.city"
+                        :rules="[rules.required()]"
+                        label="City"
+                        dense
+                ></v-text-field>
+            </div>
+            <div class="col-md-6">
+                <v-text-field v-model="newEvent.title" label="Title"></v-text-field>
+            </div>
+            <div class="col-md-6">
+                <v-menu
+                        ref="menu"
+                        v-model="timeMenu"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="newEvent.time"
+                        transition="scale-transition"
+                        offset-y
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                                v-model="newEvent.startTime + ' - ' + newEvent.endTime"
+                                label="Working hours"
+                                prepend-icon="fa-clock"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <div class="d-flex bg-white justify-space-around">
+                        <p class="m-0 text-muted">Start time:</p>
+                        <p class="m-0 text-muted">End time:</p>
+                    </div>
+                    <v-time-picker
+                            header-color="#ea1e48"
+                            color="#ea1e48"
+                            v-model="newEvent.startTime"
+                            :max="newEvent.endTime"
+                    ></v-time-picker>
+                    <v-time-picker
+                            header-color="#ea1e48"
+                            color="#ea1e48"
+                            v-model="newEvent.endTime"
+                            :min="newEvent.startTime"
+                    ></v-time-picker>
+                </v-menu>
+            </div>
+            <div class="col-md-6">
+                <v-textarea
+                        v-model="newEvent.description"
+                        :rules="[rules.required()]"
+                        name="input-7-1"
+                        label="Description"
+                        hint="Describe your event"
+                        outlined
+                ></v-textarea>
+            </div>
+            <div class="col-md-6">
+                <v-file-input
+                        @change="uploadEventImage"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Add a photo"
+                        prepend-icon="fa-camera"
+                        label="Photo"
+                ></v-file-input>
+            </div>
+            <div class="col-md-6">
+                <VuePhoneNumberInput v-model="newEvent.phoneNumber" fetch-country />
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <v-btn @click="mapDialog = true" fab outlined small class="mr-3 text-muted">
+                    <v-icon color="#333333">
+                        fa-plus
+                    </v-icon>
+                </v-btn>
+                <h6 class="text-muted">Add location</h6>
+            </div>
+            <div class="col-12 text-center">
+                <v-btn large @click="createEvent" class="bg-base mt-5 color-white" rounded>
+                    Create
+                </v-btn>
+            </div>
+        </div>
+    </div>
+    <v-dialog v-model="mapDialog" width="800">
+        <div class="position-relative map-dialog bg-white w-100">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="mapDialog = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <GmapMap
+                    class="w-100"
+                    :center="userPosition"
+                    :zoom="8"
+                    map-type-id="roadmap"
+                    style="height: 400px"
+                    @click="mark"
+            >
+                <GmapMarker
+                        :position="marker.position"
+                        :clickable="true"
+                        :draggable="true"
+                        :icon="markerIcon"
+                        @click="marker = {}"
+                />
+            </GmapMap>
+            <v-btn @click="acceptLocation" class="bg-base color-white position-absolute text-lowercase" rounded>
+                accept
+            </v-btn>
+        </div>
+    </v-dialog>
+    <v-dialog v-model="infoDialog" width="500">
+        <div class="info-dialog edit-company-modal bg-white">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="infoDialog = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <div class="w-100 p-4 text-center">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-4 m-0 p-0 text-center">
+                        <v-file-input
+                                @change="uploadProfileImage"
+                                accept="image/*"
+                                label="Change photo"
+                                hide-input
+                                class="col-4 ml-auto mr-auto"
+                        >
+                        </v-file-input>
+                        <p class="m-0 p-0">Change photo</p>
+                    </div>
+                    <div :style="{'backgroundImage': 'url(' + setUserImg(user.img) + ')'}" class="col-4 m-0 p-0 img">
+                    </div>
+<!--                    <img class="col-4 w-100" style="border-radius: 50%" height="150" :src="setUserImg(user.img)" alt="img">-->
+                    <span @click="passwordDialog = true, infoDialog = false" class="col-4 text-muted cursor-pointer">Change password</span>
+                </div>
+                <v-text-field v-model="profile.userName" height="30" class="username mt-4" label="Username" outlined>
+                    <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                        fa-user
+                    </v-icon>
+                </v-text-field>
+                <v-text-field v-model="profile.email" type="email" class="email" label="Email"  outlined>
+                    <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                        fa-envelope
+                    </v-icon>
+                </v-text-field>
+                <v-text-field v-model="profile.phoneNumber" class="phone" label="Phone" outlined>
+                    <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                        fa-phone
+                    </v-icon>
+                </v-text-field>
+
+                <v-select
+                        v-model="profile.country"
+                        :items="countries"
+                        item-text="english"
+                        item-value="english"
+                        label="Country"
+                        class="country"
+                        outlined
+                >
+                    <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                        fa-map-marker-alt
+                    </v-icon>
+                </v-select>
+
+                <v-text-field
+                        v-model="profile.city"
+                        label="City"
+                        class="city"
+                        outlined
+                >
+                    <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                        fa-building
+                    </v-icon>
+                </v-text-field>
+
+                <v-text-field v-model="profile.address" class="address" label="Address" outlined>
+                    <v-icon left slot="prepend-inner" color="#ea1e48" class="cursor-pointer icon">
+                        fa-address-card
+                    </v-icon>
+                </v-text-field>
+                <v-btn @click="editProfile" class="bg-base color-white text-lowercase" rounded>
+                    accept
+                </v-btn>
+            </div>
+        </div>
+    </v-dialog>
+    <v-dialog v-model="deleteProfileDialog" width="500">
+        <div class="delete-dialog bg-white">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="deleteProfileDialog = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <div class="w-100 p-5 text-center">
+                <img class="mb-2" height="130" :src="setUserImg(user.img)" alt="img">
+                <h5 class="text-muted">{{ user.userName }}</h5>
+                <h2 class="color-base">Delete your profile?</h2>
+                <p>Are you sure? This action can't be undone</p>
+                <div class="d-flex w-100 justify-space-around">
+                    <v-btn @click="deleteProfile" outlined style="background: #333333" class="color-white text-lowercase">yes</v-btn>
+                    <v-btn @click="deleteProfileDialog = false" outlined class="bg-base color-white text-lowercase">nope</v-btn>
+                </div>
+            </div>
+        </div>
+    </v-dialog>
+    <v-dialog v-model="deleteEventDialog" width="500">
+        <div class="delete-dialog bg-white">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="deleteEventDialog = false, currentEvent = {}">
+                    fa-times
+                </v-icon>
+            </div>
+            <div class="w-100 p-5 text-center">
+                <h1 class="text-muted">{{ currentEvent.title }}</h1>
+                <h2 class="color-base">Delete this event?</h2>
+                <p>Are you sure? This action can't be undone</p>
+                <div class="d-flex w-100 justify-space-around">
+                    <v-btn @click="deleteEvent" outlined style="background: #333333" class="color-white text-lowercase">yes</v-btn>
+                    <v-btn @click="deleteEventDialog = false, currentEvent = {}" outlined class="bg-base color-white text-lowercase">nope</v-btn>
+                </div>
+            </div>
+        </div>
+    </v-dialog>
+    <v-dialog v-model="passwordDialog" width="500">
+        <div class="delete-dialog bg-white">
+            <div class=" w-100 bg-base d-flex overflow-hidden">
+                <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="passwordDialog = false">
+                    fa-times
+                </v-icon>
+            </div>
+            <div class="w-100 p-5 text-center">
+                <v-text-field
+                        v-model="currentPass"
+                        :rules="[rules.required, rules.passwordCounter]"
+                        type="password"
+                        label="Current password"
+                        hint="At least 6 characters"
+                        class="input-group--focused password"
+                        outlined
+                >
+                    <template slot="prepend-inner">
+                        <img height="25" width="20" class="mr-2" src="../../static/images/icons/lock.png" alt="lock">
+                    </template>
+                </v-text-field>
+                <v-text-field
+                        v-model="newPass"
+                        :rules="[rules.required, rules.passwordCounter]"
+                        type="password"
+                        label="New password"
+                        hint="At least 6 characters"
+                        class="input-group--focused password"
+                        outlined
+                >
+                    <template slot="prepend-inner">
+                        <img height="25" width="20" class="mr-2" src="../../static/images/icons/lock.png" alt="lock">
+                    </template>
+                </v-text-field>
+                <v-text-field
+                        v-model="confNewPass"
+                        :rules="[rules.required, rules.passwordCounter]"
+                        type="password"
+                        label="Confirm new password"
+                        hint="At least 6 characters"
+                        class="input-group--focused password"
+                        outlined
+                >
+                    <template slot="prepend-inner">
+                        <img height="25" width="20" class="mr-2" src="../../static/images/icons/lock.png" alt="lock">
+                    </template>
+                </v-text-field>
+                <v-btn @click="changePassword" class="bg-base color-white text-lowercase" rounded>
+                    Change
+                </v-btn>
+            </div>
+        </div>
+    </v-dialog>
+    <v-snackbar
+            v-model="snackbar"
+            :timeout="3000"
+            :color="snackbarColor"
+    >
+        <span class="color-white">{{ snackbarText }}</span>
+    </v-snackbar>
+</v-container>

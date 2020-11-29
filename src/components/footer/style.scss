@@ -1,0 +1,21 @@
+$base-margin: 130px;
+$base-color: #ea1e48;
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.v-text-field--outlined, .v-text-field--solo {
+  border-radius: 30px;
+}
+
+footer {
+  a, button, span {
+    color: white !important;
+  }
+
+  button {
+    border-color: white !important;
+    border-radius: 20px;
+  }
+}

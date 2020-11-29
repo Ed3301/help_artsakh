@@ -1,0 +1,175 @@
+$base-margin: 130px;
+$base-color: #ea1e48;
+
+#app {
+  font-family: Arm Helvetica Bold, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+.color-white {
+  color: white !important;
+}
+.color-base {
+  color: $base-color !important;
+}
+.bg-base {
+  background-color: $base-color !important;
+}
+
+.div-bg-img {
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.v-date-picker-table {
+  thead {
+    background-color: $base-color;
+    th {
+      color: white !important;
+    }
+  }
+}
+
+.search {
+  //width: 400px;
+  color: #ea1e48;
+  border-radius: 30px;
+
+  .icon {
+    color: $base-color !important;
+    padding: 5px;
+    border-left: 2px solid $base-color;
+  }
+}
+
+.categories {
+  .row, h2 {
+    color: #333333;
+    p {
+      font-size: 20px;
+    }
+    .card-box {
+      width: 120px;
+      border-radius: 10px;
+
+      //&:hover {
+      //  background-color: $base-color;
+      //  color: white;
+      //}
+    }
+  }
+}
+
+.category-checkbox {
+  padding: 77px;
+
+  .v-input--checkbox {
+    padding: 0;
+    margin: 0;
+
+    .v-input__slot {
+      label {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+}
+
+.login-modal, .register-modal, .edit-company-modal {
+  border-radius: 20px !important;
+
+  .img {
+    height: 150px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .v-input--radio-group--row {
+    label {
+      margin-bottom: 0;
+    }
+    .v-messages.theme--light {
+      display: none;
+    }
+  }
+
+  .v-input__slot {
+    min-height: 45px !important;
+
+    .v-input__prepend-inner {
+      margin-top: 10px;
+    }
+    .v-text-field__slot {
+      label {
+        top: 13px
+      }
+    }
+  }
+
+  .v-text-field--outlined {
+    border-radius: 30px;
+  }
+  .v-input.password {
+    .v-label.v-label--active {
+      left: -32px !important;
+    }
+  }
+  .v-input.email {
+    .v-label.v-label--active {
+      left: -36px !important;
+    }
+  }
+  .v-input.username {
+    .v-label.v-label--active {
+      left: -32px !important;
+    }
+  }
+  .v-input.phone {
+    .v-label.v-label--active {
+      left: -35px !important;
+    }
+  }
+  v-input.country {
+    .v-label.v-label--active {
+      left: -30px !important;
+    }
+  }
+  .extra {
+    label {
+      margin-bottom: 0 !important;
+    }
+  }
+  .info-box {
+    p {
+      color: #333333;
+      width: 100%;
+      text-align: center;
+      border-bottom: 1px solid $base-color;
+      line-height: 0.1em;
+      margin: 70px 0 35px;
+
+      span {
+        background:#fff;
+        padding:0 10px;
+      }
+    }
+
+  }
+}
+
+.map-dialog {
+  border-radius: 20px !important;
+
+  .v-btn {
+    bottom: 10px !important;
+    left: 10px !important;
+  }
+}

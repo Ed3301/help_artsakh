@@ -1,0 +1,96 @@
+$base-margin: 130px;
+$base-color: #ea1e48;
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.v-text-field--outlined, .v-text-field--solo {
+  border-radius: 30px;
+}
+
+.calendar-page {
+  max-width: 100%;
+
+  .datepicker {
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  }
+
+  .my-events {
+    img {
+      height: 100px;
+      border-radius: 10px;
+    }
+  }
+
+  .main {
+    background-color: #f6f6f6;
+
+    .events {
+
+      & > .mx-auto {
+        background-color: #f6f6f6;
+      }
+
+      .location-icon {
+        height: 30px;
+      }
+
+      .overlay {
+        .overlay-header {
+          height: 60px;
+          background-color: $base-color;
+        }
+
+        .event-data {
+          .data {
+            p {
+              font-weight: bold;
+            }
+          }
+        }
+
+        .event-img {
+          height: 300px;
+          width: 300px;
+          border-radius: 5px;
+        }
+      }
+
+      .event-card {
+        border-radius: 20px;
+        margin-right: 50px;
+
+        .card-image {
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          height: 200px;
+          color: white;
+          overflow: hidden;
+
+          .info-div {
+            opacity: 0;
+            height: 0 ;
+            background: rgba(0,0,0,0.3);
+            transition: height .5s, opacity .5s !important;
+
+            button {
+              color: $base-color;
+              border-color: white;
+              border-radius: 10px;
+              background-color: white;
+            }
+          }
+
+          &:hover {
+            .info-div {
+              height: 100%;
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}
