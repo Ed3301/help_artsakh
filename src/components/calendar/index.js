@@ -74,16 +74,16 @@ export default {
         },
         setEventImg(event) {
             if(event.img) {
-                return require('../../../../events-api/public/storage/eventImages/' + event.img);
+                return process.env.VUE_APP_API_URL + '/storage/eventImages/' + event.img;
             } else {
-                return require('../../../../events-api/public/storage/eventImages/event.jpg');
+                return process.env.VUE_APP_API_URL + '/storage/eventImages/event.jpg';
             }
         },
         setUserImg(img) {
             if(img) {
-                return require('../../../../events-api/public/storage/profileImages/' + img);
+                return process.env.VUE_APP_API_URL + '/storage/profileImages/' + img;
             } else {
-                return require('../../../../events-api/public/storage/profileImages/user.png');
+                return process.env.VUE_APP_API_URL + '/storage/profileImages/user.png';
             }
         },
         showEvent(event) {

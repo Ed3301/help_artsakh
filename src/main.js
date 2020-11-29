@@ -20,7 +20,7 @@ let headers = store.state.token ? {
     };
 
 Vue.$http = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: process.env.VUE_APP_API_URL || 'https://secure-stream-70624.herokuapp.com/api',
   headers
 });
 

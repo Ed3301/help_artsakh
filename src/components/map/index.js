@@ -49,9 +49,9 @@ export default {
         },
         setUserImg(img) {
             if(img) {
-                return require('../../../../events-api/public/storage/profileImages/' + img);
+                return process.env.VUE_APP_API_URL + '/storage/profileImages/' + img;
             } else {
-                return require('../../../../events-api/public/storage/profileImages/user.png');
+                return process.env.VUE_APP_API_URL + '/storage/profileImages/user.png';
             }
         },
         markerIcon(event) {
