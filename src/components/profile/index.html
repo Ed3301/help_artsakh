@@ -253,7 +253,7 @@
                     </v-date-picker>
                 </v-menu>
                 <div class="d-flex justify-space-between">
-                    <v-btn large @click="getEvents" class="bg-base mt-5 color-white" rounded>
+                    <v-btn large @click="(e) => getEvents()" class="bg-base mt-5 color-white" rounded>
                         Find
                     </v-btn>
                     <v-btn large @click="filters = {}" dark class="mt-5 color-white" rounded>
