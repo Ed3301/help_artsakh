@@ -99,9 +99,8 @@ export default {
                     this.snackbar = true;
                 })
                 .catch(err => {
-                    console.log(err);
                     this.snackbarColor = 'error';
-                    this.snackbarText = err.msg;
+                    this.snackbarText = err.response.data.msg;
                     this.snackbar = true;
                 });
         },

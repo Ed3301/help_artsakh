@@ -417,7 +417,7 @@
                 ></v-file-input>
             </div>
             <div class="col-md-6">
-                <VuePhoneNumberInput v-model="newEvent.phoneNumber" fetch-country />
+                <VuePhoneNumberInput v-model="newEvent.phoneNumber" fetch-country required />
             </div>
             <div class="col-md-6 d-flex align-items-center">
                 <v-btn @click="mapDialog = true" fab outlined small class="mr-3 text-muted">

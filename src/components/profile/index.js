@@ -135,7 +135,7 @@ export default {
                     }
                 })
                 .catch(err => {
-                    this.snackbarText = err.msg;
+                    this.snackbarText = err.response.data.msg;
                     this.snackbarColor = 'error';
                     this.snackbar = true;
                 });
@@ -251,7 +251,7 @@ export default {
                     }
                 })
                 .catch(err => {
-                    this.snackbarText = err.msg;
+                    this.snackbarText = err.response.data.msg;
                     this.snackbarColor = 'error';
                     this.snackbar = true;
                 });
@@ -271,7 +271,7 @@ export default {
                         }
                     })
                     .catch((err) => {
-                        this.snackbarText = err.msg;
+                        this.snackbarText = err.response.data.msg;
                         this.snackbarColor = 'error';
                         this.snackbar = true;
                     });
