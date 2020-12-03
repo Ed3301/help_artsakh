@@ -8,6 +8,7 @@ export default {
     data() {
         return {
             store,
+            location: location,
             headerPictures: [
                 { src: require('../../static/images/slide1.jpg') },
                 { src: require('../../static/images/slide2.jpg') },

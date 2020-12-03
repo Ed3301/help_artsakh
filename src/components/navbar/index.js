@@ -15,6 +15,8 @@ export default {
             snackbar: false,
             email: '',
             password: '',
+            snackbarColor: '',
+            snackbarText: '',
             rules: {
                 required: value => !!value || 'Required.',
                 passwordCounter: value => value.length <= 20 || 'Max 20 characters',
@@ -56,15 +58,18 @@ export default {
       register() {
           Vue.$http.post('/signUp', this.newUser)
               .then(res => {
-                  console.log(res);
                   if(res.status === 200) {
+                      this.snackbarColor = 'success';
+                      this.snackbarText = 'You have successfully registered';
                       this.snackbar = true;
                       this.store.state.registerModal = false;
                       this.store.state.loginModal = true;
                   }
               })
               .catch(err => {
-                  console.log(err);
+                  this.snackbarColor = 'error';
+                  this.snackbarText = err.response.data.msg;
+                  this.snackbar = true;
               })
       },
       login() {
@@ -78,7 +83,9 @@ export default {
                   }
               })
               .catch(err => {
-                  console.log(err);
+                  this.snackbarColor = 'error';
+                  this.snackbarText = err.response.data.msg;
+                  this.snackbar = true;
               })
       }
     },

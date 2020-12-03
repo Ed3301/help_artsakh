@@ -9,20 +9,20 @@
         </v-carousel>
     </v-container>
     <v-container fluid class="calendar">
-        <div class="row justify-content-between">
-            <div class="col-6">
+        <div class="row justify-content-center justify-content-md-between">
+            <div class="col-12 text-center col-md-6">
                 <v-date-picker
                         v-model="picker"
                         color="#ea1e48"
                         class="datepicker"
                 ></v-date-picker>
             </div>
-            <div class="col-6 map">
-                <v-card class="row flex-column align-items-center ml-auto mr-0" max-width="290" height="260">
+            <div class="col-12 text-center col-md-6 map">
+                <v-card class="row flex-column align-items-center m-auto ml-md-auto mr-md-0" max-width="290" height="260">
                     <img class="location-icon" src="../../static/images/icons/location.png">
                     <hr class="w-75 border m-0" />
                     <h4 class="font-weight-bold">Map orientic</h4>
-                    <v-btn @click.stop="$router.push('/map')" rounded color="#ea1e48">
+                    <v-btn @click.stop="location.href = '/map'" rounded color="#ea1e48">
                         Check it now
                     </v-btn>
                 </v-card>
@@ -30,11 +30,11 @@
         </div>
     </v-container>
     <v-container fluid class="categories">
-        <h2 class="text-center mb-3">
+        <h2 class="text-center mb-3 mt-3">
             Pick a category
         </h2>
         <div class="row justify-content-center">
-            <div class="col-2 row justify-content-center align-items-center m-1" v-for="(category, i) in categories" :key="i">
+            <div class="col-4 col-sm-3 col-md-2 row justify-content-center align-items-center m-1" v-for="(category, i) in categories" :key="i">
                 <div
                         class="card-box text-center cursor-pointer" :id="'category' + category.name.replace(' ', '')"
                         @click="selectCategory(category)"
@@ -104,9 +104,9 @@
                 </div>
             </div>
             <div class="event-data w-100 p-4">
-                <div class="row justify-content-start w-100 p-4">
-                    <div class="col-5">
-                        <img class="event-img" :src="setEventImg(currentEvent)" alt="img">
+                <div class="row justify-content-xl-start w-100 p-4">
+                    <div class="col-12 col-lg-7 col-xl-5">
+                        <div class="event-img" :style="{backgroundImage: 'url(' + setEventImg(currentEvent) + ')'}"></div>
                         <div class="d-flex mt-5">
                             <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
                             <div>
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 ml-0 data">
+                    <div class="col-12 col-lg-5 col-xl-6 ml-lg-0 data">
                         <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
                         <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
                             <img class="location-icon" src="../../static/images/icons/location.png">
@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <div class="slide" v-if="otherEventsOfUser.length">
-                    <h1 class="color-base ml-5">Other events of this company</h1>
+                    <p class="text-h5 text-md-h4 color-base ml-5">Other events of this company</p>
                     <v-sheet class="mx-auto">
                         <v-slide-group
                                 class="pa-4"
@@ -182,13 +182,13 @@
     </v-container>
     <v-container fluid class="our-story mt-5 mb-5">
         <div class="row justify-content-center align-items-center">
-            <div class="col-7 info-box p-5">
+            <div class="col-12 col-lg-7 info-box p-5">
                 <h2 class="color-base"><span>OUR STORY</span></h2>
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. At debitis, eaque enim exercitationem iusto perspiciatis tempora? A accusantium architecto cumque ea exercitationem ipsum iusto libero nisi odio optio quos tempore unde, veniam veritatis voluptate. Accusamus molestiae nulla quasi sed sunt! Beatae cupiditate dicta distinctio esse eveniet ex magnam omnis, perferendis.
                 </p>
             </div>
-            <div class="col-5 text-center">
+            <div class="col-12 col-lg-5 text-center">
                 <h1 class="color-base font-weight-bold p-4">Want to make a single post?</h1>
                 <v-btn @click="store.state.loginModal = true" x-large color="#ea1e48" class="font-weight-bold color-white">Login to add a post</v-btn>
             </div>
@@ -197,7 +197,7 @@
     <v-container fluid class="our-partners mt-5 mb-5">
         <h1 class="text-center">Our Partners</h1>
         <div class="row justify-content-center align-items-center">
-            <div class="col-2" v-for="i in 11" :key="i">
+            <div class="col-4 col-sm-2" v-for="i in 11" :key="i">
                 <img height="50" :src="require(`../../static/images/logos/logo${i}.jpg`)" alt="img">
             </div>
         </div>

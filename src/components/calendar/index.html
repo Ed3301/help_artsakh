@@ -1,11 +1,14 @@
 <v-container class="calendar-page row p-0 m-0" fluid>
-    <div class="col-4 calendar text-center">
-        <h5 class="font-weight-bold m-3">Event Calendar</h5>
-        <v-date-picker
-                v-model="picker"
-                color="#ea1e48"
-                class="datepicker"
-        ></v-date-picker>
+    <div class="col-12 col-lg-4 calendar text-center justify-content-center">
+        <div>
+            <h5 class="font-weight-bold m-3">Event Calendar</h5>
+            <v-date-picker
+                    v-model="picker"
+                    color="#ea1e48"
+                    class="datepicker"
+            ></v-date-picker>
+        </div>
+
         <div class="category-checkbox row">
             <v-checkbox
                     v-for="(category, i) in categories"
@@ -13,13 +16,13 @@
                     :key="i"
                     :label="category.name"
                     color="#ea1e48"
-                    class="col-6"
+                    class="col-12 col-lg-6 text-center"
                     @click="getEvents()"
             >
             </v-checkbox>
         </div>
     </div>
-    <div class="col-8 main">
+    <div class="col-12 col-lg-8 main">
         <v-combobox
                 :items="searchResults"
                 item-text="title"
@@ -34,11 +37,11 @@
             </v-icon>
         </v-combobox>
         <h3 class="text-center text-muted">{{ new Date(picker).getFullYear() + ' ' + monthNames[new Date(picker).getMonth()] + ' ' + new Date(picker).getDate() }}</h3>
-        <v-container fluid class="events">
+        <v-container fluid class="events" v-if="events.length">
             <div class="row justify-content-center">
-                <div v-for="(event, i) in events" :key="i" class="col-md-4">
+                <div v-for="(event, i) in events" :key="i" class="col-12 col-sm-6 col-md-4">
                     <v-card
-                            class="event-card mb-1"
+                            class="event-card m-auto mb-1"
                             color="grey lighten-4"
                             max-width="300"
                             @click.stop="showEvent(event)"
@@ -82,9 +85,9 @@
                     </div>
                 </div>
                 <div class="event-data w-100 p-4">
-                    <div class="row justify-content-start w-100 p-4">
-                        <div class="col-5">
-                            <img class="event-img" :src="setEventImg(currentEvent)" alt="img">
+                    <div class="row justify-content-xl-start w-100 p-4">
+                        <div class="col-12 col-lg-7 col-xl-5">
+                            <div class="event-img" :style="{backgroundImage: 'url(' + setEventImg(currentEvent) + ')'}"></div>
                             <div class="d-flex mt-5">
                                 <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
                                 <div>
@@ -95,7 +98,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 ml-0 data">
+                        <div class="col-12 col-lg-5 col-xl-6 ml-lg-0 data">
                             <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
                             <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
                                 <img class="location-icon" src="../../static/images/icons/location.png">
@@ -117,7 +120,7 @@
                         </div>
                     </div>
                     <div class="slide" v-if="otherEventsOfUser.length">
-                        <h1 class="color-base ml-5">Other events of this company</h1>
+                        <p class="text-h5 text-md-h4 color-base ml-5">Other events of this company</p>
                         <v-sheet class="mx-auto">
                             <v-slide-group
                                     class="pa-4"
@@ -157,6 +160,9 @@
                     </div>
                 </div>
             </v-navigation-drawer>
+        </v-container>
+        <v-container fluid class="text-center text-muted h4" v-else>
+            No items
         </v-container>
     </div>
 </v-container>

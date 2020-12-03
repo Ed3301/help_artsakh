@@ -36,6 +36,16 @@ $base-color: #ea1e48;
   }
 }
 
+.v-snack__content {
+  text-align: center !important;
+}
+
+.event-img {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .search {
   //width: 400px;
   color: #ea1e48;
@@ -57,11 +67,6 @@ $base-color: #ea1e48;
     .card-box {
       width: 120px;
       border-radius: 10px;
-
-      //&:hover {
-      //  background-color: $base-color;
-      //  color: white;
-      //}
     }
   }
 }

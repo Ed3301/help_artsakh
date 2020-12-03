@@ -16,11 +16,11 @@
     </div>
     <div class="bg-white company-info">
         <div class="row">
-            <div class="col-6 d-flex align-items-center">
-                <div class="col-5 d-flex align-items-center justify-content-center">
+            <div class="col-12 col-md-6 row align-items-center">
+                <div class="col-12 col-sm-5 d-flex align-items-center justify-content-center">
                     <div class="img" :style="{'backgroundImage': 'url(' + setUserImg(user.img) + ')' }"></div>
                 </div>
-                <div class="col-7 position-relative">
+                <div class="col-12 col-sm-7 position-relative pl-5">
                     <v-icon @click="infoDialog = true" color="#333333" class="cursor-pointer position-absolute" style="right: 0">
                         fa-pen
                     </v-icon>
@@ -40,7 +40,7 @@
                     </p>
                 </div>
             </div>
-            <div class="col-6 text-right d-flex flex-column">
+            <div class="col-12 col-md-6 text-right d-flex flex-column">
                 <span class="p-2 pr-5"><v-btn @click="logout" color="#ea1e48" class="color-white" width="100" small>Log out</v-btn></span>
                 <span class="p-2 pr-5 mt-auto"><v-btn class="text-lowercase" @click="deleteProfileDialog = true" dark width="150" small>Delete your account</v-btn></span>
             </div>
@@ -58,10 +58,10 @@
         </h3>
     </div>
     <div class="events" v-if="events.length">
-        <div class="row">
-            <div v-for="(event, i) in events" :key="i" class="col-md-4">
+        <div class="row justify-content-center">
+            <div v-for="(event, i) in events" :key="i" class="col-12 col-sm-6 col-lg-4">
                 <v-card
-                        class="event-card mb-1"
+                        class="event-card mb-1 m-auto"
                         color="grey lighten-4"
                         max-width="300"
                         @click.stop="showEvent(event)"
@@ -117,9 +117,9 @@
                 </div>
             </div>
             <div class="event-data w-100 p-4">
-                <div class="row justify-content-start w-100 p-4">
-                    <div class="col-5">
-                        <img class="event-img" :src="setEventImg(currentEvent)" alt="img">
+                <div class="row justify-content-xl-start w-100 p-4">
+                    <div class="col-12 col-lg-7 col-xl-5">
+                        <div class="event-img" :style="{backgroundImage: 'url(' + setEventImg(currentEvent) + ')'}"></div>
                         <div class="d-flex mt-5">
                             <div class="div-bg-img mr-2" :style="{width: '90px', backgroundImage: 'url(' + setUserImg(currentEvent.userImg) + ')'}"></div>
                             <div>
@@ -130,7 +130,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 ml-0 data">
+                    <div class="col-12 col-lg-5 col-xl-6 ml-lg-0 data">
                         <h3 class="font-weight-bold">{{ currentEvent.title }}</h3>
                         <button @click.stop="setEventPosition({lat: currentEvent.locationLt, lng: currentEvent.locationLg})" class="class ma-2 font-weight-bold p-1 border ml-0" style="border-radius: 5px">
                             <img class="location-icon" src="../../static/images/icons/location.png">
@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 <div class="slide" v-if="otherEventsOfUser.length">
-                    <h1 class="color-base ml-5">Other events of this company</h1>
+                    <p class="text-h5 text-md-h4 color-base ml-5">Other events of this company</p>
                     <v-sheet class="mx-auto">
                         <v-slide-group
                                 class="pa-4"
@@ -197,7 +197,7 @@
                 fixed
                 temporary
                 width="25%"
-                class="overlay"
+                class="overlay filter"
         >
             <div class="w-100 bg-base d-flex overflow-hidden">
                 <v-icon class="ml-auto color-white p-2 cursor-pointer" @click="filterDrawer = false">
@@ -256,13 +256,16 @@
                     <v-btn large @click="(e) => getEvents()" class="bg-base mt-5 color-white" rounded>
                         Find
                     </v-btn>
-                    <v-btn large @click="filters = {}" dark class="mt-5 color-white" rounded>
+                    <v-btn large @click="resetFilters" dark class="mt-5 color-white" rounded>
                         reset
                     </v-btn>
                 </div>
             </div>
         </v-navigation-drawer>
     </div>
+    <v-container fluid class="text-center text-muted h4" v-else>
+        No items
+    </v-container>
     <h3 class="mt-5 mb-5 pt-4 pb-4 text-center text-muted font-weight-bold">Make an event post</h3>
     <div class="bg-white post-event p-4">
         <div class="row">

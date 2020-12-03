@@ -276,6 +276,10 @@ export default {
                         this.snackbar = true;
                     });
             }
+        },
+        resetFilters() {
+            this.filters = {};
+            this.getEvents();
         }
     }
 }

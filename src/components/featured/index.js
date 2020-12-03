@@ -1,5 +1,5 @@
 import Vue from "vue";
-import {mapMutations, mapState} from "vuex";
+import {mapGetters, mapMutations, mapState} from "vuex";
 import countries from "../../static/countries";
 
 export default {
@@ -31,7 +31,8 @@ export default {
       this.getCompanies();
     },
     computed: {
-      ...mapState(['monthNames', 'categories'])
+        ...mapState(['monthNames', 'categories']),
+        ...mapGetters(['isLoggedIn']),
     },
     methods: {
         ...mapMutations(['setEventPosition']),
@@ -101,6 +102,10 @@ export default {
                         console.log(err);
                     });
             }
+        },
+        resetFilters() {
+            this.filters = {};
+            this.getEvents();
         }
     }
 }

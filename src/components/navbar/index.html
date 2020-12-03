@@ -1,21 +1,24 @@
 <nav id="header" class="navbar navbar-expand-lg navbar-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+<!--        <span class="navbar-toggler-icon"></span>-->
+        <v-icon color="white">
+            fa-bars
+        </v-icon>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <div class="row justify-content-between align-items-lg-center navbar-nav m-0">
-            <div class="col-4 pl-0">
+            <div class="col-4 pl-0 pb-0">
                 <router-link to="/our-story" class="nav-link pl-0">OUR STORY<span class="sr-only">(current)</span></router-link>
             </div>
-            <div class="col-4 text-lg-center">
+            <div class="col-4 pl-0 pt-0 pb-0 text-lg-center">
                 <router-link to="/" class="nav-link">HELP ARTSAKH</router-link>
             </div>
-            <div class="col-4 text-lg-right pr-0">
-                <router-link to="/featured" class="nav-link d-inline">FEATURED</router-link>
-                <v-btn class="ml-2" outlined v-if="!isLoggedIn" @click="store.state.loginModal = true">
+            <div class="col-4 text-lg-right pl-0 pt-0 pb-0 pr-lg-0">
+                <router-link to="/featured" class="nav-link d-lg-inline">FEATURED</router-link>
+                <v-btn class="ml-lg-2" outlined v-if="!isLoggedIn" @click="store.state.loginModal = true">
                     Login
                 </v-btn>
-                <router-link v-else to="/profile" class="nav-link d-inline pr-0">PROFILE</router-link>
+                <router-link v-else to="/profile" class="nav-link d-lg-inline pr-0">PROFILE</router-link>
             </div>
         </div>
     </div>
@@ -167,8 +170,8 @@
     <v-snackbar
             v-model="snackbar"
             :timeout="3000"
-            color="success"
+            :color="snackbarColor"
     >
-        <span class="color-white">You're successfully registered!</span>
+        <span class="color-white text-center w-100">{{ snackbarText }}</span>
     </v-snackbar>
 </nav>
