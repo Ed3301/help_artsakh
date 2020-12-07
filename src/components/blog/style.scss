@@ -140,4 +140,12 @@ $base-color: #ea1e48;
       }
     }
   }
+
+  @media (max-width: 576px) {
+    & {
+      .overlay {
+        width: 100% !important;
+      }
+    }
+  }
 }

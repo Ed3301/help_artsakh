@@ -179,3 +179,9 @@ $base-color: #ea1e48;
     left: 10px !important;
   }
 }
+
+@media (max-width: 576px) {
+    .card-image {
+      width: 100% !important;
+    }
+}
