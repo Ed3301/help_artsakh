@@ -2,6 +2,7 @@ $base-margin: 130px;
 $base-color: #ea1e48;
 
 #app {
+  overflow-x: hidden;
   font-family: Arm Helvetica Bold, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
